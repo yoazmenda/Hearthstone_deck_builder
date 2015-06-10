@@ -5,8 +5,6 @@ Based on the wonderful open source HS simulator - [Hearthbreaker](https://github
 
 To Do list:
 
-- [ ] a task list item
-- [ ] list syntax required
-- [ ] normal **formatting**, @mentions, #1234 refs
+- [x] create a task list item
 - [ ] incomplete
 - [x] completed
