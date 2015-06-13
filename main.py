@@ -6,28 +6,62 @@ from hearthbreaker.engine import Game, Deck, card_lookup
 from hearthbreaker.cards import *
 import timeit
 import run_games
+import random
 
 
-POPULATION = 100 # population size
-generation_limit = 20 # stopping condition - adter 20 generations
-Pmutate = 0.1 #probability of mutation
+card_names = []
 
+
+def create_random_deck():
+   cards = []
+   count = 0   
+   while count < 30:
+     random_name = random.choice(card_names)
+     card = card_lookup(random_name) 
+     if card.character_class != CHARACTER_CLASS.ALL:
+       character_class = card.character_class
+     cards.append(card)
+     count += 1
+     
+def is_deck_legal():
+  pass
+    
+     
+def init_system():
+  create_all_card_names()
+
+def create_all_card_names():
+  with open("card_defs.json", "r") as file:
+    all_cards = json.load(file)
+    for card in all_cards:
+      card_names.append(card['name']) 
+  
 def init_population():
-  print("initializing population")
+  create_random_deck()
+  count = 0
+  
   
 def evaluate(population):
-  print("evaluating")
+  pass
 
 def select_parents(population):
-  print("selecting parents")
+  pass
   
 def do_crossover(population):
-  print("performing crossover")
+  pass
 
 def mutate(population):
-  print("performing mutation")
+  pass
 
 if __name__ == "__main__":
+  init_system()
+  
+  POPULATION = 100 # population size
+  generation_limit = 20 # stopping condition - adter 20 generations
+  Pmutate = 0.1 #probability of mutation
+  
+  
+  
   generation = 0  
   population = init_population() #list of N randomized individuals (decks) with fittness = 0
   
@@ -45,9 +79,7 @@ if __name__ == "__main__":
   print("-------------------------------------------------------")
   print ("Winner is: %s" %"winner")
   print("-------------------------------------------------------")
-  
-  run_games.do_stuff()
-  
+
   
   
   
