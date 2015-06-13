@@ -14,18 +14,21 @@ card_names = []
 
 def create_random_deck():
    cards = []
-   count = 0   
-   while count < 30:
-     random_name = random.choice(card_names)
-     card = card_lookup(random_name) 
-     if card.character_class != CHARACTER_CLASS.ALL:
+   count = 0
+   natural = True
+   character_class = CHARACTER_CLASS.MAGE   
+   while count < 30:     
+     card = card_lookup(random.choice(card_names))
+     if (natural == True) and (card.character_class != CHARACTER_CLASS.ALL):
        character_class = card.character_class
-     cards.append(card)
-     count += 1
+       natural = False
+     if ((natural == False) and (card.character_class == character_class) and (cards.count(card) < 2)) or ((natural == True) and (card.character_class == CHARACTER_CLASS.ALL) and (cards.count(card) < 2)):
+       cards.append(card)
+       count += 1
      
-def is_deck_legal():
-  pass
-    
+   return Deck(cards, hero_for_class(character_class))
+     
+
      
 def init_system():
   create_all_card_names()
