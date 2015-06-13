@@ -56,5 +56,4 @@ def do_stuff():
 
     print(timeit.timeit(play_game, 'gc.enable()', number=2000))
 
-if __name__ == "__main__":
-    do_stuff()
+
