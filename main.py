@@ -31,6 +31,8 @@ def create_random_deck():
      cards.append(card)
      count += 1
     
+    
+   #select class specific:
    character_class = random.choice(range(1,10))
    while count < 30:
      card = card_lookup(random.choice(card_names))
@@ -57,10 +59,14 @@ def create_all_card_names():
     for card in all_cards:
       card_names.append(card['name']) 
   
-def init_population():
-  create_random_deck()
-  count = 0
+def init_population():  
+  print("initializing population")
+  decks = []
+  for i in range(0,3):
+    decks.append(create_random_deck())
   
+  print("finish initializing population")
+  return decks
   
 def evaluate(population):
   pass
@@ -77,7 +83,7 @@ def mutate(population):
 if __name__ == "__main__":
   init_system()
   
-  POPULATION = 100 # population size
+  pop_size = 100 # population size
   generation_limit = 20 # stopping condition - adter 20 generations
   Pmutate = 0.1 #probability of mutation
   

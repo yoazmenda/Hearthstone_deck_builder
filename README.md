@@ -6,7 +6,8 @@ Based on the wonderful open source HS simulator - [Hearthbreaker](https://github
 To Do list:
 - [x] create a task list item
 - [x] implement SGA skeleton
-- [ ] implement random deck creation 
-- [ ] implement init_population() in main.py
+- [x] implement random deck creation 
+- [x] implement init_population() in main.py
+- [ ] implement single elimination tournament
 
 
