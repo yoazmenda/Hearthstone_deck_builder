@@ -62,7 +62,7 @@ def create_all_card_names():
 def init_population():  
   print("initializing population")
   decks = []
-  for i in range(0,3):
+  for i in range(0,pop_size):
     decks.append(create_random_deck())
   
   print("finish initializing population")
@@ -83,7 +83,7 @@ def mutate(population):
 if __name__ == "__main__":
   init_system()
   
-  pop_size = 100 # population size
+  pop_size = 8 # population size
   generation_limit = 20 # stopping condition - adter 20 generations
   Pmutate = 0.1 #probability of mutation
   
