@@ -13,19 +13,37 @@ card_names = []
 
 
 def create_random_deck():
+   neutrals = random.choice(range(0,31))
    cards = []
    count = 0
-   natural = True
-   character_class = CHARACTER_CLASS.MAGE   
-   while count < 30:     
+   character_class = CHARACTER_CLASS.ALL   
+   #select neutrals:
+   while count < neutrals:
      card = card_lookup(random.choice(card_names))
-     if (natural == True) and (card.character_class != CHARACTER_CLASS.ALL):
-       character_class = card.character_class
-       natural = False
-     if ((natural == False) and (card.character_class == character_class) and (cards.count(card) < 2)) or ((natural == True) and (card.character_class == CHARACTER_CLASS.ALL) and (cards.count(card) < 2)):
-       cards.append(card)
-       count += 1
-     
+     if card.character_class != CHARACTER_CLASS.ALL:
+       continue
+     prev_count = 0
+     for prev in cards:       
+       if prev.name == card.name:
+         prev_count += 1
+     if prev_count == 2:
+       continue          
+     cards.append(card)
+     count += 1
+    
+   character_class = random.choice(range(1,10))
+   while count < 30:
+     card = card_lookup(random.choice(card_names))
+     if card.character_class != character_class:
+       continue
+     prev_count = 0
+     for prev in cards:       
+       if prev.name == card.name:
+         prev_count += 1
+     if prev_count == 2:
+       continue          
+     cards.append(card)
+     count += 1
    return Deck(cards, hero_for_class(character_class))
      
 
