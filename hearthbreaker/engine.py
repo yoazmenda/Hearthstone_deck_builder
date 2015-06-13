@@ -533,6 +533,7 @@ class Deck:
         for card in cards:
             card.drawn = False
         self.left = 30
+        self.fitness = 0
 
     def copy(self):
         def copy_card(card):

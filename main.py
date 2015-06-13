@@ -7,6 +7,7 @@ from hearthbreaker.cards import *
 import timeit
 import run_games
 
+
 POPULATION = 100 # population size
 generation_limit = 20 # stopping condition - adter 20 generations
 Pmutate = 0.1 #probability of mutation
@@ -45,7 +46,7 @@ if __name__ == "__main__":
   print ("Winner is: %s" %"winner")
   print("-------------------------------------------------------")
   
-  
+  run_games.do_stuff()
   
   
   
