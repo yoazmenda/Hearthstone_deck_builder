@@ -9,4 +9,6 @@ after two same cards are already inserted do you forbid this card? (increasing o
 
 mana curve as a domain specific fitness measure
 
-tere is no draw only two sided lose
+there is no draw only two sided lose
+
+there are different agents, we can use one, or a few combined

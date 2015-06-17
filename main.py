@@ -74,6 +74,12 @@ def init_population(pop_size):
     return decks
   
 def evaluate(population):
+    'run a single elimination tournament on the entire population'
+    
+    
+    
+    
+    
     return population
 
 def select_parents(population):
@@ -94,7 +100,7 @@ def start():
     
     #Genetic Algorithm
     while generation < generation_limit: #stopping condition
-        population = evaluate(population) #make a single-elimination-tournament and assign fitness to n individuals
+        population = evaluate(population) #make a single-elimination-tournament and assign fitness to each individuals
         mating_pool = select_parents(population) #use fitness proportioned selection (roulette wheel technique) to select parents
         population = do_crossover(mating_pool) #create next generation from mating pool with crossover. survivor selection: children replace parents
         population = mutate(population) #choose some individuals and mutate them
