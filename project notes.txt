@@ -1,0 +1,8 @@
+interesting things:
+
+random effect:
+random deck creation is very very implementation sensitive.
+tiny changes make big differance on how decks look. for example:
+do you first select hero?
+what is the number of neatral cards in a deck? should all decks have tha same number??
+after two same cards are already inserted do you forbid this card? (increasing other's probability)

@@ -7,7 +7,8 @@ To Do list:
 - [x] create a task list item
 - [x] implement SGA skeleton
 - [x] implement random deck creation 
-- [x] implement init_population() in main.py
+- [x] init_population()
+- [ ] fill genetic algorithm
 - [ ] implement single elimination tournament
 
 
