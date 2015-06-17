@@ -1,21 +1,36 @@
 import json
+from hearthbreaker.agents.basic_agents import RandomAgent
 from hearthbreaker.cards.heroes import hero_for_class
 from hearthbreaker.constants import CHARACTER_CLASS
-from hearthbreaker.engine import Deck, card_lookup
+from hearthbreaker.engine import Game, Deck, card_lookup
+from hearthbreaker.cards import *
 import timeit
-import random
+from random import choice
+from run_games import load_deck
+from hearthbreaker.agents.basic_agents import DoNothingAgent
+from tests.agents.testing_agents import SelfSpellTestingAgent, EnemySpellTestingAgent, OneCardPlayingAgent, \
+    EnemyMinionSpellTestingAgent, CardTestingAgent, PlayAndAttackAgent
 
-cards = []
+
+def fight(deck1, deck2):
+    'battle between two decks and return the winner'
+    game = Game([deck1, deck2], [PlayAndAttackAgent(), PlayAndAttackAgent()])
+    game.start()
+    winner = game.players[0].deck
+    if game.players[0].hero.dead == True:
+        winner = game.players[1].deck
+    del game     
+    return winner
 
 def create_random_deck():
-    neutrals = random.choice(range(0,31))
-    character_class = random.choice(range(1,10)) #only normal heroes and must be one of them
+    neutrals = choice(range(0,31))
+    character_class = choice(range(1,10)) #only normal heroes and must be one of them
     deck = [] #result
     count = 0
     naturals_cards = list(filter(lambda card: card.character_class == CHARACTER_CLASS.ALL, cards)) #filter out hero cards
     class_cards = list(filter(lambda card: card.character_class == character_class, cards)) 
     while count < neutrals:
-        card = random.choice(naturals_cards)
+        card = choice(naturals_cards)
         prev_count = 0
         for prev in deck:  #count previous occurrences
             if prev.name == card.name:
@@ -27,7 +42,7 @@ def create_random_deck():
         count += 1
 
     while count < 30:
-        card = random.choice(class_cards)
+        card = choice(class_cards)
         prev_count = 0
         for prev in cards:  #count previous occurrences
             if prev.name == card.name:
@@ -59,16 +74,16 @@ def init_population(pop_size):
     return decks
   
 def evaluate(population):
-    pass
+    return population
 
 def select_parents(population):
-    pass
+    return population
   
 def do_crossover(population):
-    pass
+    return population
 
 def mutate(population):
-    pass
+    return population
 
 def start():
     init_system()  
@@ -84,10 +99,31 @@ def start():
         population = do_crossover(mating_pool) #create next generation from mating pool with crossover. survivor selection: children replace parents
         population = mutate(population) #choose some individuals and mutate them
         generation += 1
-  
+        
+   
+    zoo_c = 0;
+    bad_c = 0;
+    for _i in range(0,100):
+        zoo = load_deck("example.hsdeck")
+        bad = load_deck("zoo.hsdeck")
+        winner = fight(zoo, bad)
+        if winner == zoo:
+            zoo_c += 1
+        else:
+            bad_c += 1;
+        
+    print ("zoo wins: %d" %zoo_c)
+    print ("bad wins: %d" %bad_c)
+    #print winner:    
+    #print(winner.hero) 
+    #for card in winner.cards:
+    #    print(card.name)
+        
+        
+    
 
 
-
+cards = []
 if __name__ == "__main__":
     print(timeit.timeit(start, 'gc.enable()', number=1))
     print("Done")
