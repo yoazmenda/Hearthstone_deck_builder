@@ -5,7 +5,6 @@ from hearthbreaker.engine import Deck, card_lookup
 import timeit
 import random
 
-
 cards = []
 
 def create_random_deck():
@@ -16,7 +15,6 @@ def create_random_deck():
     naturals_cards = list(filter(lambda card: card.character_class == CHARACTER_CLASS.ALL, cards)) #filter out hero cards
     class_cards = list(filter(lambda card: card.character_class == character_class, cards)) 
     print(naturals_cards)
-    print("--------------------------------------------------")
     print(class_cards)
     while count < neutrals:
         card = random.choice(naturals_cards)
@@ -25,7 +23,7 @@ def create_random_deck():
             if prev.name == card.name:
                 prev_count += 1
         if prev_count == 2:
-            naturals_cards.remove(card)
+            #naturals_cards.remove(card)
             continue                
         deck.append(card)
         count += 1
@@ -37,11 +35,11 @@ def create_random_deck():
             if prev.name == card.name:
                 prev_count += 1
         if prev_count == 2:
-            class_cards.remove(card)
+            #class_cards.remove(card)
             continue                
         deck.append(card)
         count += 1
-    print(len(deck))
+
     return Deck(deck, hero_for_class(character_class))
      
 
