@@ -548,7 +548,10 @@ class Deck:
 
     def can_draw(self):
         return self.left > 0
-
+    
+    def compare(self,other):
+        return self.cards == other.cards
+        
     def draw(self, game):
         if not self.can_draw():
             raise GameException("Cannot draw more than 30 cards")

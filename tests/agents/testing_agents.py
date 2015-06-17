@@ -86,7 +86,7 @@ class WeaponTestingAgent(DoNothingAgent):
 
 class PlayAndAttackAgent(DoNothingAgent):
     def do_turn(self, player):
-
+        
         while len(player.hand) > 0 and player.hand[0].can_use(player, player.game):
             player.game.play_card(player.hand[0])
 

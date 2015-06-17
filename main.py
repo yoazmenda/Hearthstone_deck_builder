@@ -10,17 +10,29 @@ from run_games import load_deck
 from hearthbreaker.agents.basic_agents import DoNothingAgent
 from tests.agents.testing_agents import SelfSpellTestingAgent, EnemySpellTestingAgent, OneCardPlayingAgent, \
     EnemyMinionSpellTestingAgent, CardTestingAgent, PlayAndAttackAgent
-
+from math import pow, log2, floor
+from hearthbreaker.agents.trade_agent import TradeAgent
 
 def fight(deck1, deck2):
-    'battle between two decks and return the winner'
-    game = Game([deck1, deck2], [PlayAndAttackAgent(), PlayAndAttackAgent()])
+    'battle between two decks and return the winner using the trade bot'
+    d1 = deck1.copy()
+    d2 = deck1.copy()
+    game = Game([d1, d2], [RandomAgent(), RandomAgent()])
     game.start()
     winner = game.players[0].deck
     if game.players[0].hero.dead == True:
-        winner = game.players[1].deck
-    del game     
-    return winner
+        winner = game.players[1].deck 
+    
+    if list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck1.cards[0:30])):
+        return deck1
+    elif list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck2.cards[0:30])):
+        return deck2
+    else:
+        print("---------errror compareing decks in fight")
+        print(list(map(lambda card :card.name, winner.cards)))
+        print(list(map(lambda card :card.name, deck1.cards)))
+        print(list(map(lambda card :card.name, deck2.cards)))
+    return -1
 
 def create_random_deck():
     neutrals = choice(range(0,31))
@@ -66,20 +78,36 @@ def create_cards():
             cards.append(card_lookup(card['name']))
   
 def init_population(pop_size):  
-    print("initializing population")
     decks = []
     for _i in range(0,pop_size):
         decks.append(create_random_deck())  
-    print("finish initializing population")
+    print("population initialized ")
     return decks
   
 def evaluate(population):
-    'run a single elimination tournament on the entire population'
+    'run a single elimination tournament on the entire population'       
+    n = len(population)
+    current_players = list(population) #don't want to lose original
+    #single elimiation tournament
+    r = 0
     
-    
-    
-    
-    
+    while n > 1:           
+        winners = []
+        for _i in range(0,1+int(floor((n-1)/2))):            
+            deck1 = current_players[0]
+            deck2 = current_players[1]
+            winner = fight(deck1, deck2)
+            if winner == deck1:
+                deck2.fitness = 1/float(n)
+                winners.append(deck1)    
+            else:
+                deck1.fitness = 1/float(n)
+                winners.append(deck2)              
+            current_players.remove(deck1)                
+            current_players.remove(deck2)
+        current_players = winners       
+        n = n / 2
+        r += 1           
     return population
 
 def select_parents(population):
@@ -92,13 +120,14 @@ def mutate(population):
     return population
 
 def start():
-    init_system()  
-    pop_size = 8 # population size
-    generation_limit = 20 # stopping condition
-    generation = 0  
-    population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0
+    init_system()
+    k=3
+    pop_size = int(pow(2,k)) #population size - a power of two
+    generation_limit = 1 # stopping condition
     
     #Genetic Algorithm
+    population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0
+    generation = 0  
     while generation < generation_limit: #stopping condition
         population = evaluate(population) #make a single-elimination-tournament and assign fitness to each individuals
         mating_pool = select_parents(population) #use fitness proportioned selection (roulette wheel technique) to select parents
@@ -106,29 +135,6 @@ def start():
         population = mutate(population) #choose some individuals and mutate them
         generation += 1
         
-   
-    zoo_c = 0;
-    bad_c = 0;
-    for _i in range(0,100):
-        zoo = load_deck("example.hsdeck")
-        bad = load_deck("zoo.hsdeck")
-        winner = fight(zoo, bad)
-        if winner == zoo:
-            zoo_c += 1
-        else:
-            bad_c += 1;
-        
-    print ("zoo wins: %d" %zoo_c)
-    print ("bad wins: %d" %bad_c)
-    #print winner:    
-    #print(winner.hero) 
-    #for card in winner.cards:
-    #    print(card.name)
-        
-        
-    
-
-
 cards = []
 if __name__ == "__main__":
     print(timeit.timeit(start, 'gc.enable()', number=1))
