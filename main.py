@@ -14,8 +14,6 @@ def create_random_deck():
     count = 0
     naturals_cards = list(filter(lambda card: card.character_class == CHARACTER_CLASS.ALL, cards)) #filter out hero cards
     class_cards = list(filter(lambda card: card.character_class == character_class, cards)) 
-    print(naturals_cards)
-    print(class_cards)
     while count < neutrals:
         card = random.choice(naturals_cards)
         prev_count = 0
@@ -39,7 +37,6 @@ def create_random_deck():
             continue                
         deck.append(card)
         count += 1
-
     return Deck(deck, hero_for_class(character_class))
      
 
