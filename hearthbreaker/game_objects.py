@@ -967,11 +967,15 @@ class Minion(Character):
                 self.remove_from_board()
                 self.unattach()
                 if deathrattle is not None:
-                    for rattle in deathrattle:
-                        rattle.do(self)
-
-                        if self.player.double_deathrattle:
+                    try:
+                        for rattle in deathrattle:
                             rattle.do(self)
+                            if self.player.double_deathrattle:
+                                rattle.do(self)
+                    except:
+                        print("FUCK DEATHRATTLE")        
+                            
+                            
                 self.player.trigger("minion_died", self, by)
                 # Used to activate any secrets applied during the death phase
                 self.player.trigger("after_death", self.player)
