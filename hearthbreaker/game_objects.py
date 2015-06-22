@@ -973,7 +973,8 @@ class Minion(Character):
                             if self.player.double_deathrattle:
                                 rattle.do(self)
                     except:
-                        print("FUCK DEATHRATTLE")        
+                        #print("FUCK DEATHRATTLE")
+                        pass        
                             
                             
                 self.player.trigger("minion_died", self, by)

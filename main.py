@@ -18,7 +18,7 @@ def fight(deck1, deck2):
     'battle between two decks and return the winner using the trade bot'
     d1 = deck1.copy()
     d2 = deck1.copy()
-    game = Game([d1, d2], [RandomAgent(), RandomAgent()])
+    game = Game([d1, d2], [PlayAndAttackAgent(), PlayAndAttackAgent()])
     game.start()
     winner = game.players[0].deck
     if game.players[0].hero.dead == True:
@@ -27,12 +27,7 @@ def fight(deck1, deck2):
     if list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck1.cards[0:30])):
         return deck1
     elif list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck2.cards[0:30])):
-        return deck2
-    else:
-        print("---------errror compareing decks in fight")
-        print(list(map(lambda card :card.name, winner.cards)))
-        print(list(map(lambda card :card.name, deck1.cards)))
-        print(list(map(lambda card :card.name, deck2.cards)))
+        return deck2    
     return -1
 
 def create_random_deck():
@@ -123,15 +118,11 @@ def select_parents(population):
         num = uniform(0.000001,1+(log2(n))/2)
         #print("range: [0, %f]" %(1+(log2(n))/2))    
         individual = 0
-        left = 0
-        
-        while  not (num > left and num <= left+population[individual].fitness):
-         #   print("num: %f, current: %f" %(num, current))
+        left = 0        
+        while  not (num > left and num <= left+population[individual].fitness):         
             left += population[individual].fitness
-            individual += 1  
-          #  print ("individual: %d" %individual)
+            individual += 1            
         mating_pool.append(population[individual])        
-        print("adding parent %d" %individual) 
     return mating_pool
   
 def do_crossover(population):
@@ -142,19 +133,26 @@ def do_mutate(population):
 
 def start():
     init_system()
-    k=6
+    k=10
     pop_size = int(pow(2,k)) #population size - a power of two
-    generation_limit = 1 # stopping condition
+    generation_limit = 10 # stopping condition
     
     #Genetic Algorithm
     population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0
     generation = 0  
     while generation < generation_limit: #stopping condition
+        print("generation: %d" %generation)
+        #print("Generation: %d" %generation)
         population = evaluate(population) #make a single-elimination-tournament and assign fitness to each individual
         mating_pool = select_parents(population) #use fitness proportioned selection (roulette wheel technique) to select parents
         population = do_crossover(mating_pool) #create next generation from mating pool with crossover. survivor selection: children replace parents
         population = do_mutate(population) #choose some individuals and mutate them
         generation += 1
+    
+    winner = population[0]
+    print(winner.hero)
+    for card in winner.cards:
+        print(card.name)
         
 cards = []
 if __name__ == "__main__":
