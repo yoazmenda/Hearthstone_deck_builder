@@ -81,19 +81,19 @@ def init_population(pop_size):
     decks = []
     for _i in range(0,pop_size):
         decks.append(create_random_deck())  
-    print("population initialized ")
+    print("population initialized: %d individuals " %len(decks))
     return decks
   
 def evaluate(population):
     'run a single elimination tournament on the entire population'       
     n = len(population)
-    current_players = list(population) #don't want to lose original
-    #single elimiation tournament
-    r = 0
-    
+    current_players = list(population) #don't want to lose original it's a different list with same pointers
+    #single elimination tournament
     while n > 1:           
-        winners = []
-        for _i in range(0,1+int(floor((n-1)/2))):            
+        winners = []                
+        for _i in range(0,1+int(floor((n-1)/2))): #run n/2 battles            
+            #this is a single battle
+            #take the first two players and make them fight
             deck1 = current_players[0]
             deck2 = current_players[1]
             winner = fight(deck1, deck2)
@@ -102,12 +102,16 @@ def evaluate(population):
                 winners.append(deck1)    
             else:
                 deck1.fitness = 1/float(n)
-                winners.append(deck2)              
+                winners.append(deck2)                              
+            #remove both players from the contestants
             current_players.remove(deck1)                
             current_players.remove(deck2)
+        
+        #after all the n/2 battles are over, the players for the next round are this round's winners
         current_players = winners       
         n = n / 2
-        r += 1           
+    winner = winners[0]
+    winner.fitness = 1
     return population
 
 def select_parents(population):
@@ -116,7 +120,7 @@ def select_parents(population):
 def do_crossover(population):
     return population
 
-def mutate(population):
+def do_mutate(population):
     return population
 
 def start():
@@ -129,10 +133,10 @@ def start():
     population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0
     generation = 0  
     while generation < generation_limit: #stopping condition
-        population = evaluate(population) #make a single-elimination-tournament and assign fitness to each individuals
+        population = evaluate(population) #make a single-elimination-tournament and assign fitness to each individual
         mating_pool = select_parents(population) #use fitness proportioned selection (roulette wheel technique) to select parents
         population = do_crossover(mating_pool) #create next generation from mating pool with crossover. survivor selection: children replace parents
-        population = mutate(population) #choose some individuals and mutate them
+        population = do_mutate(population) #choose some individuals and mutate them
         generation += 1
         
 cards = []
