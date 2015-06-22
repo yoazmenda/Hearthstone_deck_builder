@@ -8,7 +8,12 @@ To Do list:
 - [x] implement SGA skeleton
 - [x] implement random deck creation 
 - [x] init_population()
+- [x] implement single elimination tournament
+- [x] implement parent selection
+- [ ] Fix bug - decks change over time during games 
+- [ ] implement Crossover
+- [ ] implement Mutation
+- [ ] Do profiling to measure performance
 - [ ] fill genetic algorithm
-- [ ] implement single elimination tournament
-
+- [ ] fill genetic algorithm
 
