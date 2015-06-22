@@ -12,3 +12,6 @@ mana curve as a domain specific fitness measure
 there is no draw only two sided lose
 
 there are different agents, we can use one, or a few combined
+
+having hardd time implementing roulette wheel because there is no way to select individuals according to a given distribution
+only way to do it is binary search that takes o(n(logn)) time

@@ -5,13 +5,14 @@ from hearthbreaker.constants import CHARACTER_CLASS
 from hearthbreaker.engine import Game, Deck, card_lookup
 from hearthbreaker.cards import *
 import timeit
-from random import choice
+from random import choice, uniform
 from run_games import load_deck
 from hearthbreaker.agents.basic_agents import DoNothingAgent
 from tests.agents.testing_agents import SelfSpellTestingAgent, EnemySpellTestingAgent, OneCardPlayingAgent, \
     EnemyMinionSpellTestingAgent, CardTestingAgent, PlayAndAttackAgent
 from math import pow, log2, floor
 from hearthbreaker.agents.trade_agent import TradeAgent
+from locale import currency
 
 def fight(deck1, deck2):
     'battle between two decks and return the winner using the trade bot'
@@ -114,8 +115,24 @@ def evaluate(population):
     winner.fitness = 1
     return population
 
-def select_parents(population):
-    return population
+def select_parents(population):    
+    mating_pool = []
+    n = len(population)    
+    population.sort(key=lambda deck:-deck.fitness)    
+    for _i in range(0, n):               
+        num = uniform(0.000001,1+(log2(n))/2)
+        #print("range: [0, %f]" %(1+(log2(n))/2))    
+        individual = 0
+        left = 0
+        
+        while  not (num > left and num <= left+population[individual].fitness):
+         #   print("num: %f, current: %f" %(num, current))
+            left += population[individual].fitness
+            individual += 1  
+          #  print ("individual: %d" %individual)
+        mating_pool.append(population[individual])        
+        print("adding parent %d" %individual) 
+    return mating_pool
   
 def do_crossover(population):
     return population
@@ -125,7 +142,7 @@ def do_mutate(population):
 
 def start():
     init_system()
-    k=3
+    k=6
     pop_size = int(pow(2,k)) #population size - a power of two
     generation_limit = 1 # stopping condition
     
