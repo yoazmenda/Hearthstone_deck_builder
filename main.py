@@ -23,20 +23,15 @@ def fight(deck1, deck2):
     winner = game.players[0].deck
     if game.players[0].hero.dead == True:
         winner = game.players[1].deck 
-#                 
-#     if list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck1.cards[0:30])):
-#         return deck1
-#     elif list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck2.cards[0:30])):
-#         return deck2
     if winner.compare(deck1) == True:
-        print("match deck1")
+        #print("match deck1")
         return deck1
     elif winner.compare(deck2) == True:
-        print("match deck2")
+        #print("match deck2")
         return deck2
     else:
-        print("not match!!!!!")
-        return -1
+        print(len(winner.cards))
+    return -1
     
 
 def create_random_deck():
@@ -161,7 +156,7 @@ def start():
     winner = population[0]
     print(winner.hero)
     for card in winner.cards:
-        print(card.character_class)
+        print(card.name)
         
 cards = []
 if __name__ == "__main__":
