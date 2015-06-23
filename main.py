@@ -17,18 +17,27 @@ from locale import currency
 def fight(deck1, deck2):
     'battle between two decks and return the winner using the trade bot'
     d1 = deck1.copy()
-    d2 = deck1.copy()
+    d2 = deck2.copy()
     game = Game([d1, d2], [PlayAndAttackAgent(), PlayAndAttackAgent()])
     game.start()
     winner = game.players[0].deck
     if game.players[0].hero.dead == True:
         winner = game.players[1].deck 
-    
-    if list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck1.cards[0:30])):
+#                 
+#     if list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck1.cards[0:30])):
+#         return deck1
+#     elif list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck2.cards[0:30])):
+#         return deck2
+    if winner.compare(deck1) == True:
+        print("match deck1")
         return deck1
-    elif list(map(lambda card :card.name, winner.cards[0:30])) == list(map(lambda card :card.name, deck2.cards[0:30])):
-        return deck2    
-    return -1
+    elif winner.compare(deck2) == True:
+        print("match deck2")
+        return deck2
+    else:
+        print("not match!!!!!")
+        return -1
+    
 
 def create_random_deck():
     neutrals = choice(range(0,31))
@@ -152,7 +161,7 @@ def start():
     winner = population[0]
     print(winner.hero)
     for card in winner.cards:
-        print(card.name)
+        print(card.character_class)
         
 cards = []
 if __name__ == "__main__":

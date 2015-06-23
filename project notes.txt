@@ -15,3 +15,6 @@ there are different agents, we can use one, or a few combined
 
 having hardd time implementing roulette wheel because there is no way to select individuals according to a given distribution
 only way to do it is binary search that takes o(n(logn)) time
+
+decks change during games. like humans change in their lifetimes and gain features that can't be passed to siblings.
+so we return the ORIGINAL deck even if it has changed during the fight ("during it's life") this has a name we learned in class
