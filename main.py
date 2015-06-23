@@ -5,7 +5,7 @@ from hearthbreaker.constants import CHARACTER_CLASS
 from hearthbreaker.engine import Game, Deck, card_lookup
 from hearthbreaker.cards import *
 import timeit
-from random import choice, uniform
+from random import choice, uniform, shuffle
 from run_games import load_deck
 from hearthbreaker.agents.basic_agents import DoNothingAgent
 from tests.agents.testing_agents import SelfSpellTestingAgent, EnemySpellTestingAgent, OneCardPlayingAgent, \
@@ -27,10 +27,10 @@ def fight(deck1, deck2):
         #print("match deck1")
         return deck1
     elif winner.compare(deck2) == True:
-        #print("match deck2")
         return deck2
     else:
-        print(len(winner.cards))
+        print("error in fight - returning deck2")
+        return deck2
     return -1
     
 
@@ -85,6 +85,8 @@ def init_population(pop_size):
     return decks
   
 def evaluate(population):
+    for individual in population:
+        individual.fitness = 0
     'run a single elimination tournament on the entire population'       
     n = len(population)
     current_players = list(population) #don't want to lose original it's a different list with same pointers
@@ -128,35 +130,62 @@ def select_parents(population):
             individual += 1            
         mating_pool.append(population[individual])        
     return mating_pool
-  
-def do_crossover(population):
+
+def isDeckLegal(deck):    
+    for card in deck:
+        count = 0
+        for other in deck:
+            if card.name == other.name:
+                count += 1
+                if count == 3:
+                    return False                
+    return True
+def crossover(deck1, deck2, TryToReplace)
+    if deck1.character_class == deck2.character_class:
+        for _i in  range(0,30):
+            
+        
+        
+        
+    else:
+        
+        
+        
+      
+def do_crossover(population, prob):
+    shuffle(population)
+    for _i in range(0,len(population)-1,2):
+        if uniform(0,1) <= prob:                                
+            crossover(population[_i], [population[_i+1]], 15)    
     return population
 
-def do_mutate(population):
+def do_mutate(population,prob):    
     return population
 
 def start():
     init_system()
     k=10
+    xover_prob = 0.2 #should be number in [0,1)
+    mutation_prob = 0.1 #should be number in [0,1)
     pop_size = int(pow(2,k)) #population size - a power of two
-    generation_limit = 10 # stopping condition
-    
+    generation_limit = 10# stopping condition    
     #Genetic Algorithm
     population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0
     generation = 0  
     while generation < generation_limit: #stopping condition
-        print("generation: %d" %generation)
-        #print("Generation: %d" %generation)
+        print("generation: %d" %generation)        
         population = evaluate(population) #make a single-elimination-tournament and assign fitness to each individual
         mating_pool = select_parents(population) #use fitness proportioned selection (roulette wheel technique) to select parents
-        population = do_crossover(mating_pool) #create next generation from mating pool with crossover. survivor selection: children replace parents
-        population = do_mutate(population) #choose some individuals and mutate them
+        population = do_crossover(mating_pool, xover_prob) #create next generation from mating pool with crossover. survivor selection: children replace parents
+        population = do_mutate(population, mutation_prob) #choose some individuals and mutate them
         generation += 1
     
+    #print results
     winner = population[0]
     print(winner.hero)
-    for card in winner.cards:
-        print(card.name)
+    print("cards: %d" %len(winner.cards))
+#     for card in winner.cards:
+#         print(card.name)
         
 cards = []
 if __name__ == "__main__":

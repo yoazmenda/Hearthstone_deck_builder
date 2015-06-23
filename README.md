@@ -10,10 +10,8 @@ To Do list:
 - [x] init_population()
 - [x] implement single elimination tournament
 - [x] implement parent selection
-- [ ] Fix bug - decks change over time during games 
+- [x] Fix bug - decks change over time during games 
 - [ ] implement Crossover
 - [ ] implement Mutation
 - [ ] Do profiling to measure performance
 - [ ] fill genetic algorithm
-- [ ] fill genetic algorithm
-
