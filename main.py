@@ -15,7 +15,7 @@ from hearthbreaker.agents.trade_agent import TradeAgent
 from locale import currency
 
 def fight(deck1, deck2):
-    'battle between two decks and return the winner using the trade bot'
+    'battle between two decks and return the winner using an AI bot'
     d1 = deck1.copy()
     d2 = deck2.copy()
     game = Game([d1, d2], [PlayAndAttackAgent(), PlayAndAttackAgent()])
@@ -79,12 +79,14 @@ def create_cards():
   
 def init_population(pop_size):  
     decks = []
-    for _i in range(0,pop_size):
-        decks.append(create_random_deck())  
+    while len(decks) != pop_size:
+        newDeck = create_random_deck()
+        if isDeckLegal(newDeck) == True:
+            decks.append(newDeck)          
     print("population initialized: %d individuals " %len(decks))
     return decks
   
-def evaluate(population):
+def evaluate(population,battleAmount):
     for individual in population:
         individual.fitness = 0
     'run a single elimination tournament on the entire population'       
@@ -98,8 +100,19 @@ def evaluate(population):
             #take the first two players and make them fight
             deck1 = current_players[0]
             deck2 = current_players[1]
-            winner = fight(deck1, deck2)
-            if winner == deck1:
+            
+            
+            deck1Wins = 0
+            deck2Wins = 0
+            for _i in range(0,battleAmount):
+                winner = fight(deck1, deck2)
+                if winner == deck1:
+                    deck1Wins += 1
+                else:
+                    deck2Wins += 1
+            
+            
+            if deck1Wins >= deck2Wins:
                 deck2.fitness = 1/float(n)
                 winners.append(deck1)    
             else:
@@ -121,8 +134,7 @@ def select_parents(population):
     n = len(population)    
     population.sort(key=lambda deck:-deck.fitness)    
     for _i in range(0, n):               
-        num = uniform(0.000001,1+(log2(n))/2)
-        #print("range: [0, %f]" %(1+(log2(n))/2))    
+        num = uniform(0.000001,1+(log2(n))/2)            
         individual = 0
         left = 0        
         while  not (num > left and num <= left+population[individual].fitness):         
@@ -132,31 +144,43 @@ def select_parents(population):
     return mating_pool
 
 def isDeckLegal(deck):    
-    for card in deck:
+    if len(deck.cards)!=30:
+        return "deck more than 30"
+    for card in deck.cards:
+        if card.character_class != deck.hero.character_class and card.character_class != CHARACTER_CLASS.ALL :#                
+                return "deck two heroes"
         count = 0
-        for other in deck:
+        for other in deck.cards:
             if card.name == other.name:
                 count += 1
                 if count == 3:
-                    return False                
+                    return "deck more than two of same card"
     return True
-def crossover(deck1, deck2, TryToReplace)
-    if deck1.character_class == deck2.character_class:
-        for _i in  range(0,30):
-            
-        
-        
-        
-    else:
-        
-        
-        
-      
+
+def crossover(deck1, deck2, prob):
+    child1 = deck1.copy()
+    child2 = deck2.copy()        
+    for i in  range(0,30):
+        if uniform(0,1) <= prob:                            
+            backup1 = list(child1.cards)
+            backup2 = list(child2.cards) 
+            temp_swp = child1.cards[i]
+            child1.cards[i] = child2.cards[i]
+            child2.cards[i] = temp_swp                
+            if isDeckLegal(child1) == False:
+                child1.cards = backup1
+            if isDeckLegal(child2) == False:
+                child2.cards = backup2                    
+    return [child1, child2]
+                              
 def do_crossover(population, prob):
+    probabilityToSwap = 0.2 #the chance a cards will !*try*! swap between parents
     shuffle(population)
     for _i in range(0,len(population)-1,2):
-        if uniform(0,1) <= prob:                                
-            crossover(population[_i], [population[_i+1]], 15)    
+        if uniform(0,1) <= prob: #else: parents will leave to next generation
+            children = crossover(population[_i], population[_i+1], probabilityToSwap)           
+            population[_i] = children[0]
+            population[_i+1] = children[1]    
     return population
 
 def do_mutate(population,prob):    
@@ -164,28 +188,36 @@ def do_mutate(population,prob):
 
 def start():
     init_system()
-    k=10
-    xover_prob = 0.2 #should be number in [0,1)
+    k=5
+    battleAmount = 15 #how many battles a pair is fighting - only one fight can be just luck
+    xover_prob = 0.3 #should be number in [0,1)
     mutation_prob = 0.1 #should be number in [0,1)
     pop_size = int(pow(2,k)) #population size - a power of two
     generation_limit = 10# stopping condition    
     #Genetic Algorithm
-    population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0
+    population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0    
     generation = 0  
     while generation < generation_limit: #stopping condition
         print("generation: %d" %generation)        
-        population = evaluate(population) #make a single-elimination-tournament and assign fitness to each individual
+        population = evaluate(population, battleAmount) #make a single-elimination-tournament and assign fitness to each individual
         mating_pool = select_parents(population) #use fitness proportioned selection (roulette wheel technique) to select parents
         population = do_crossover(mating_pool, xover_prob) #create next generation from mating pool with crossover. survivor selection: children replace parents
         population = do_mutate(population, mutation_prob) #choose some individuals and mutate them
-        generation += 1
+        generation += 1        
     
+    print("test results:")
+    for ind in population:
+        ans = isDeckLegal(ind)
+        if ans != True:
+            print("illegal deck: %s" %ans)
+            len(ind.cards)
+
     #print results
     winner = population[0]
     print(winner.hero)
     print("cards: %d" %len(winner.cards))
-#     for card in winner.cards:
-#         print(card.name)
+    for card in winner.cards:
+        print("card: %s, Rarity: %d" %(card.name, card.rarity))
         
 cards = []
 if __name__ == "__main__":

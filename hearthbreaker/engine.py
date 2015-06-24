@@ -533,7 +533,7 @@ class Deck:
         for card in cards:
             card.drawn = False
         self.left = 30
-        self.fitness = 0
+        self.fitness = 0        
 
     def copy(self):
         def copy_card(card):
@@ -550,13 +550,13 @@ class Deck:
         return self.left > 0
     
     def compare(self,other):
-        ans = True
-        if len(self.cards) != 30 or len(other.cards) != 30:
-            return False
+#         ans = True
+#         #if len(self.cards) != 30 or len(other.cards) != 30:
+#         #    return False
         for _i in range(0,30):
             if self.cards[_i].name != other.cards[_i].name:
-                ans = False
-        return ans
+                return False
+        return True
         
     def draw(self, game):
         if not self.can_draw():

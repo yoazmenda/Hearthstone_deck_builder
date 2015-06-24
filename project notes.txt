@@ -18,3 +18,6 @@ only way to do it is binary search that takes o(n(logn)) time
 
 decks change during games. like humans change in their lifetimes and gain features that can't be passed to siblings.
 so we return the ORIGINAL deck even if it has changed during the fight ("during it's life") this has a name we learned in class
+
+once i did more than 1 fight for each pair i got really got decks
+also  - good indication that the deck are good was the rarity i "forgot" to enforce, and i dodn't enforce only collectible cards
