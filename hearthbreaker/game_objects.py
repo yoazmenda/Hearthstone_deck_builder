@@ -973,7 +973,7 @@ class Minion(Character):
                             if self.player.double_deathrattle:
                                 rattle.do(self)
                     except:
-                        #print("FUCK DEATHRATTLE")
+                        #deathdattle not good
                         pass        
                             
                             

@@ -246,7 +246,10 @@ class MinionHasDeathrattle(Condition):
         super().__init__()
 
     def evaluate(self, target, minion, *args):
-        return len(minion.deathrattle) > 0
+        try:
+            return len(minion.deathrattle) > 0
+        except:
+            return True # patch
 
 
 class HasBattlecry(Condition):
