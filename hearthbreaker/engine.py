@@ -544,6 +544,7 @@ class Deck:
         new_deck.cards = [copy_card(card) for card in self.cards]
         new_deck.hero = self.hero
         new_deck.left = self.left
+        new_deck.fitness = self.fitness
         return new_deck
 
     def can_draw(self):

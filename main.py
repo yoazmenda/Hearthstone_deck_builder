@@ -41,18 +41,18 @@ def create_random_deck():
     count = 0
     naturals_cards = list(filter(lambda card: card.character_class == CHARACTER_CLASS.ALL, cards)) #filter out hero cards
     class_cards = list(filter(lambda card: card.character_class == character_class, cards)) 
+    #create neutrals
     while count < neutrals:
         card = choice(naturals_cards)
         prev_count = 0
         for prev in deck:  #count previous occurrences
             if prev.name == card.name:
                 prev_count += 1
-        if prev_count == 2:
-            #naturals_cards.remove(card)
+        if prev_count == 2:            
             continue                
         deck.append(card)
         count += 1
-
+    #create class specific    
     while count < 30:
         card = choice(class_cards)
         prev_count = 0
@@ -183,18 +183,43 @@ def do_crossover(population, prob):
             population[_i+1] = children[1]    
     return population
 
+def mutate(deck, prob):    
+    for card in deck.cards:
+        if uniform(0,1) <= prob:
+            mutate_sccess = False
+            #try mutation until success:
+            while mutate_sccess == False:
+                newCard = choice(cards)
+                tempNewDeck = deck.copy()
+                tempNewDeck.cards = deck.cards
+                for tCard in tempNewDeck.cards:
+                    tCard.drawn = False 
+                tempNewDeck.cards.remove(card)
+                tempNewDeck.cards.append(newCard)
+                if isDeckLegal(tempNewDeck):
+                    deck = tempNewDeck
+                    mutate_sccess = True                    
+    return deck
+        
+        
+
 def do_mutate(population,prob):    
-    'mutate'
+    probabilityToChange = 0.2
+    for deck in population:
+        if uniform(0,1) <= prob:
+            mutated_deck = mutate(deck,probabilityToChange)
+            population.remove(deck)
+            population.append(mutated_deck)
     return population
 
 def start():
     init_system()
-    k=5
+    k=7
     battleAmount = 15 #how many battles a pair is fighting - only one fight can be just luck
     xover_prob = 0.3 #should be number in [0,1)
     mutation_prob = 0.1 #should be number in [0,1)
     pop_size = int(pow(2,k)) #population size - a power of two
-    generation_limit = 10# stopping condition    
+    generation_limit = 25# stopping condition    
     #Genetic Algorithm
     population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0    
     generation = 0  
