@@ -13,13 +13,13 @@ from tests.agents.testing_agents import SelfSpellTestingAgent, EnemySpellTesting
 from math import pow, log2, floor
 from hearthbreaker.agents.trade_agent import TradeAgent
 from locale import currency
-import tests
+from functools import reduce
 
 def fight(deck1, deck2):
     'battle between two decks and return the winner using an AI bot'
     d1 = deck1.copy()
     d2 = deck2.copy()
-    game = Game([d1, d2], [PlayAndAttackAgent(), PlayAndAttackAgent()])
+    game = Game([d1, d2], [RandomAgent(), RandomAgent()])
     game.start()
     winner = game.players[0].deck
     if game.players[0].hero.dead == True:
@@ -110,7 +110,8 @@ def evaluate(population,battleAmount):
                 fightOk = False
                 countStop = 20
                 iters = 0
-                while fightOk == False:                    
+                while fightOk == False:  
+                    iters += 1                  
                     try:
                         fightOk = True
                         if iters == countStop:
@@ -219,23 +220,51 @@ def do_mutate(population,prob):
             population.append(mutated_deck)
     return population
 
-def test1(population, generation):
-    pass
+def test1(gereration_player, population,battleAmount):
+    winrate = []
+    deck1 = gereration_player                                                
+    for deck2 in population:                                          
+        deck1Wins = 0
+        deck2Wins = 0
+        for _i in range(0,battleAmount):
+            fightOk = False
+            countStop = 20
+            iters = 0
+            while fightOk == False:  
+                iters += 1                  
+                try:
+                    fightOk = True
+                    if iters == countStop:
+                        winner = deck1
+                    else:
+                        winner = fight(deck1, deck2)
+                except:
+                    print("fight failed - trying again")
+                    fightOk = False
+            if winner == deck1:
+                deck1Wins += 1
+            else:
+                deck2Wins += 1        
+        winrate.append(deck1Wins/(deck1Wins+deck2Wins+0.000001))
+    print(reduce(lambda x, y: x + y, winrate) / len(winrate))
+
+            
 
 def start():
     init_system()
-    k=8
+    k=5
     battleAmount = 10 #how many battles a pair is fighting - only one fight can be just luck
-    xover_prob = 0.4 #should be number in (0,1)
-    mutation_prob = 0.05 #should be number in (0,1)
+    xover_prob = 0.2 #should be number in (0,1)
+    mutation_prob = 0.4 #should be number in (0,1)
     pop_size = int(pow(2,k)) #population size - a power of two
-    generation_limit = 10# stopping condition    
+    generation_limit = 40# stopping condition    
     #Genetic Algorithm    
-    population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0                
+    population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0
+    test1_population = init_population(pop_size)                
     generation = 0  
     while generation < generation_limit: #stopping condition
         print("generation: %d" %generation)   
-        test1(population, generation)     
+        test1(population[0],test1_population, battleAmount)     
         population = evaluate(population, battleAmount) #make a single-elimination-tournament and assign fitness to each individual
         mating_pool = select_parents(population) #use fitness proportioned selection (roulette wheel technique) to select parents
         population = do_crossover(mating_pool, xover_prob) #create next generation from mating pool with crossover. survivor selection: children replace parents
