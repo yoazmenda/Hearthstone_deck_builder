@@ -249,7 +249,7 @@ class MinionHasDeathrattle(Condition):
         try:
             return len(minion.deathrattle) > 0
         except:
-            return True # patch
+            return False # patch
 
 
 class HasBattlecry(Condition):

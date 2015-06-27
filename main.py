@@ -89,6 +89,7 @@ def init_population(pop_size):
 def evaluate(population,battleAmount):
     for individual in population:
         individual.fitness = 0
+        individual.drawn = False
     'run a single elimination tournament on the entire population'       
     n = len(population)
     current_players = list(population) #don't want to lose original it's a different list with same pointers
@@ -183,23 +184,39 @@ def do_crossover(population, prob):
             population[_i+1] = children[1]    
     return population
 
-def mutate(deck, prob):    
-    for card in deck.cards:
-        if uniform(0,1) <= prob:
-            mutate_sccess = False
-            #try mutation until success:
-            while mutate_sccess == False:
+def mutate(deck, prob):
+    newDeck = deck.copy()    
+    for i in range(0,30):
+        if uniform(0,1) <=prob:
+            mutate_ok = False
+            while mutate_ok == False:
                 newCard = choice(cards)
-                tempNewDeck = deck.copy()
-                tempNewDeck.cards = deck.cards
-                for tCard in tempNewDeck.cards:
-                    tCard.drawn = False 
-                tempNewDeck.cards.remove(card)
-                tempNewDeck.cards.append(newCard)
-                if isDeckLegal(tempNewDeck):
-                    deck = tempNewDeck
-                    mutate_sccess = True                    
-    return deck
+                newCard.drawn = False
+                newDeck.cards[i] = choice(cards)
+                if isDeckLegal(newDeck):
+                    mutate_ok= True
+    return newDeck
+                
+            
+    
+        
+#     for card in deck.cards:
+#         if uniform(0,1) <= prob:
+#             mutate_sccess = False
+#             #try mutation until success:
+#             while mutate_sccess == False:
+#                 newCard = choice(cards)
+#                 tempNewDeck = deck.copy()
+#                 tempNewDeck.cards = deck.cards
+#                 for tCard in tempNewDeck.cards:
+#                     tCard.drawn = False 
+#                 tempNewDeck.cards.remove(card)
+#                 tempNewDeck.cards.append(newCard)
+#                 if isDeckLegal(tempNewDeck):
+#                     deck = tempNewDeck
+#                     mutate_sccess = True                    
+#     return deck
+    
         
         
 
@@ -214,12 +231,12 @@ def do_mutate(population,prob):
 
 def start():
     init_system()
-    k=7
-    battleAmount = 15 #how many battles a pair is fighting - only one fight can be just luck
+    k=6
+    battleAmount = 3 #how many battles a pair is fighting - only one fight can be just luck
     xover_prob = 0.3 #should be number in [0,1)
     mutation_prob = 0.1 #should be number in [0,1)
     pop_size = int(pow(2,k)) #population size - a power of two
-    generation_limit = 25# stopping condition    
+    generation_limit = 10# stopping condition    
     #Genetic Algorithm
     population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0    
     generation = 0  
@@ -228,7 +245,7 @@ def start():
         population = evaluate(population, battleAmount) #make a single-elimination-tournament and assign fitness to each individual
         mating_pool = select_parents(population) #use fitness proportioned selection (roulette wheel technique) to select parents
         population = do_crossover(mating_pool, xover_prob) #create next generation from mating pool with crossover. survivor selection: children replace parents
-        population = do_mutate(population, mutation_prob) #choose some individuals and mutate them
+        #population = do_mutate(population, mutation_prob) #choose some individuals and mutate them
         generation += 1        
     
     print("test results:")
@@ -244,6 +261,11 @@ def start():
     print("cards: %d" %len(winner.cards))
     for card in winner.cards:
         print("card: %s, Rarity: %d" %(card.name, card.rarity))
+        
+        
+        
+        
+    
         
 cards = []
 if __name__ == "__main__":

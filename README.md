@@ -11,7 +11,7 @@ To Do list:
 - [x] implement single elimination tournament
 - [x] implement parent selection
 - [x] Fix bug - decks change over time during games 
-- [ ] implement Crossover
-- [ ] implement Mutation
+- [x] implement Crossover
+- [x] implement Mutation
+- [x] fill genetic algorithm
 - [ ] Do profiling to measure performance
-- [ ] fill genetic algorithm
