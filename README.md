@@ -14,4 +14,3 @@ To Do list:
 - [x] implement Crossover
 - [x] implement Mutation
 - [x] fill genetic algorithm
-- [ ] Do profiling to measure performance

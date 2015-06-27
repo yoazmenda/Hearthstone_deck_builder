@@ -551,9 +551,6 @@ class Deck:
         return self.left > 0
     
     def compare(self,other):
-#         ans = True
-#         #if len(self.cards) != 30 or len(other.cards) != 30:
-#         #    return False
         for _i in range(0,30):
             if self.cards[_i].name != other.cards[_i].name:
                 return False

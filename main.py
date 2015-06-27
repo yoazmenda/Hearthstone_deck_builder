@@ -107,10 +107,15 @@ def evaluate(population,battleAmount):
             deck2Wins = 0
             for _i in range(0,battleAmount):
                 fightOk = False
-                while fightOk == False:
+                countStop = 20
+                iters = 0
+                while fightOk == False:                    
                     try:
                         fightOk = True
-                        winner = fight(deck1, deck2)
+                        if iters == countStop:
+                            winner = deck1
+                        else:
+                            winner = fight(deck1, deck2)
                     except:
                         print("fight failed - trying again")
                         fightOk = False
@@ -215,12 +220,12 @@ def do_mutate(population,prob):
 
 def start():
     init_system()
-    k=5
-    battleAmount = 1 #how many battles a pair is fighting - only one fight can be just luck
-    xover_prob = 0.3 #should be number in [0,1)
-    mutation_prob = 0.3 #should be number in [0,1)
+    k=8
+    battleAmount = 10 #how many battles a pair is fighting - only one fight can be just luck
+    xover_prob = 0.4 #should be number in (0,1)
+    mutation_prob = 0.05 #should be number in (0,1)
     pop_size = int(pow(2,k)) #population size - a power of two
-    generation_limit = 5# stopping condition    
+    generation_limit = 10# stopping condition    
     #Genetic Algorithm    
     population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0                
     generation = 0  
@@ -245,9 +250,12 @@ def start():
     print("cards: %d" %len(winner.cards))
     for card in winner.cards:
         print("card: %s, Rarity: %d" %(card.name, card.rarity))
-         
-         
+                     
         
+    
+    
+    
+      
         
     
         
