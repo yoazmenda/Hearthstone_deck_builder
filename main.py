@@ -13,6 +13,7 @@ from tests.agents.testing_agents import SelfSpellTestingAgent, EnemySpellTesting
 from math import pow, log2, floor
 from hearthbreaker.agents.trade_agent import TradeAgent
 from locale import currency
+import tests
 
 def fight(deck1, deck2):
     'battle between two decks and return the winner using an AI bot'
@@ -218,6 +219,9 @@ def do_mutate(population,prob):
             population.append(mutated_deck)
     return population
 
+def test1(population, generation):
+    pass
+
 def start():
     init_system()
     k=8
@@ -230,35 +234,14 @@ def start():
     population = init_population(pop_size) #list of N randomized individuals (decks) with fitness = 0                
     generation = 0  
     while generation < generation_limit: #stopping condition
-        print("generation: %d" %generation)        
+        print("generation: %d" %generation)   
+        test1(population, generation)     
         population = evaluate(population, battleAmount) #make a single-elimination-tournament and assign fitness to each individual
         mating_pool = select_parents(population) #use fitness proportioned selection (roulette wheel technique) to select parents
         population = do_crossover(mating_pool, xover_prob) #create next generation from mating pool with crossover. survivor selection: children replace parents
         population = do_mutate(population, mutation_prob) #choose some individuals and mutate them
         generation += 1        
-    
-    print("test results:")
-    for ind in population:
-        ans = isDeckLegal(ind)
-        if ans != True:
-            print("illegal deck: %s" %ans)
-
-
-    #print results
-    winner = population[0]
-    print(winner.hero)
-    print("cards: %d" %len(winner.cards))
-    for card in winner.cards:
-        print("card: %s, Rarity: %d" %(card.name, card.rarity))
-                     
-        
-    
-    
-    
-      
-        
-    
-        
+               
 cards = []
 if __name__ == "__main__":
     print(timeit.timeit(start, 'gc.enable()', number=1))
